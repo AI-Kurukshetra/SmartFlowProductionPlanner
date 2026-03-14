@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { InventoryModal, type InventoryFormData } from "@/components/inventory/InventoryModal";
-import { InventoryGanttChart } from "@/components/inventory/InventoryGanttChart";
 import Link from "next/link";
 
 const LOW_STOCK_THRESHOLD = 10;
@@ -22,26 +21,9 @@ interface InventoryItem {
   plant?: { name: string };
 }
 
-interface DailyLog {
-  inventory_id: string;
-  log_date: string;
-  quantity: number;
-}
-
-function toDateKey(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
 export default function InventoryPage() {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
-  const [chartStartDate, setChartStartDate] = useState<Date>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 3);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  });
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<(InventoryItem & InventoryFormData) | null>(null);
@@ -85,39 +67,8 @@ export default function InventoryPage() {
       .order("material_name");
     setInventory(invData ?? []);
 
-    const invIds = (invData ?? []).map((i) => i.id);
-    const today = toDateKey(new Date());
-
-    let logs: DailyLog[] = [];
-    if (invIds.length > 0) {
-      const startKey = toDateKey(new Date(chartStartDate));
-      const endD = new Date(chartStartDate);
-      endD.setDate(endD.getDate() + 13);
-      const endKey = toDateKey(endD);
-
-      const { data: logsData, error: logsErr } = await supabase
-        .from("inventory_daily")
-        .select("inventory_id, log_date, quantity")
-        .in("inventory_id", invIds)
-        .gte("log_date", startKey)
-        .lte("log_date", endKey);
-      logs = logsErr ? [] : (logsData ?? []);
-
-      for (const inv of invData ?? []) {
-        const hasToday = logs.some((l) => l.inventory_id === inv.id && l.log_date === today);
-        if (!hasToday) {
-          const { error: upsertErr } = await supabase.from("inventory_daily").upsert(
-            { inventory_id: inv.id, log_date: today, quantity: inv.quantity },
-            { onConflict: "inventory_id,log_date" }
-          );
-          if (!upsertErr) logs.push({ inventory_id: inv.id, log_date: today, quantity: inv.quantity });
-        }
-      }
-    }
-    setDailyLogs(logs);
-
     setLoading(false);
-  }, [supabase, chartStartDate]);
+  }, [supabase]);
 
   useEffect(() => {
     fetchData();
@@ -137,34 +88,15 @@ export default function InventoryPage() {
         .eq("id", editingItem.id);
 
       if (error) throw error;
-
-      const today = toDateKey(new Date());
-      await supabase.from("inventory_daily").upsert(
-        { inventory_id: editingItem.id, log_date: today, quantity: data.quantity },
-        { onConflict: "inventory_id,log_date" }
-      );
     } else {
-      const { data: inserted, error } = await supabase
-        .from("inventory")
-        .insert({
-          plant_id: data.plant_id,
-          material_name: data.material_name,
-          quantity: data.quantity,
-          unit: data.unit,
-        })
-        .select("id")
-        .single();
+      const { error } = await supabase.from("inventory").insert({
+        plant_id: data.plant_id,
+        material_name: data.material_name,
+        quantity: data.quantity,
+        unit: data.unit,
+      });
 
       if (error) throw error;
-
-      if (inserted) {
-        const today = toDateKey(new Date());
-        await supabase.from("inventory_daily").insert({
-          inventory_id: inserted.id,
-          log_date: today,
-          quantity: data.quantity,
-        });
-      }
     }
 
     setEditingItem(null);
@@ -180,19 +112,11 @@ export default function InventoryPage() {
       .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
       .eq("id", id);
 
+    setUpdatingId(null);
     if (error) {
-      setUpdatingId(null);
       alert(error.message);
       return;
     }
-
-    const today = toDateKey(new Date());
-    await supabase.from("inventory_daily").upsert(
-      { inventory_id: id, log_date: today, quantity: newQuantity },
-      { onConflict: "inventory_id,log_date" }
-    );
-
-    setUpdatingId(null);
     await fetchData();
   }
 
@@ -237,33 +161,6 @@ export default function InventoryPage() {
           Add material
         </button>
       </div>
-
-      {inventory.length > 0 && (
-        <div className="mt-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Stock by date (Gantt)</h2>
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-600 dark:text-slate-400">From</label>
-              <input
-                type="date"
-                value={chartStartDate.toISOString().slice(0, 10)}
-                onChange={(e) => {
-                  const d = new Date(e.target.value);
-                  d.setHours(0, 0, 0, 0);
-                  setChartStartDate(d);
-                }}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-              />
-            </div>
-          </div>
-          <InventoryGanttChart
-            inventory={inventory}
-            dailyLogs={dailyLogs}
-            startDate={chartStartDate}
-            daysCount={14}
-          />
-        </div>
-      )}
 
       {lowStockItems.length > 0 && (
         <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">

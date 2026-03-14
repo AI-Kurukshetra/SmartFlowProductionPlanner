@@ -1,17 +1,15 @@
--- Production runs can start from a work order (no schedule required)
+-- Run in Supabase SQL Editor (same as migrations/011_production_runs_work_order.sql)
+
 ALTER TABLE public.production_runs
   ADD COLUMN IF NOT EXISTS work_order_id UUID REFERENCES public.work_orders(id) ON DELETE CASCADE;
 
--- Backfill work_order_id from schedule for existing rows
 UPDATE public.production_runs pr
 SET work_order_id = s.work_order_id
 FROM public.schedules s
 WHERE pr.schedule_id = s.id AND pr.work_order_id IS NULL;
 
--- Allow runs without schedule (work-order-only)
 ALTER TABLE public.production_runs ALTER COLUMN schedule_id DROP NOT NULL;
 
--- At least one of schedule_id or work_order_id must be set
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -25,7 +23,6 @@ END $$;
 
 CREATE INDEX IF NOT EXISTS production_runs_work_order_id_idx ON public.production_runs (work_order_id);
 
--- RLS: org via work_order or via schedule
 DROP POLICY IF EXISTS "Org members manage production_runs" ON public.production_runs;
 CREATE POLICY "Org members manage production_runs" ON public.production_runs FOR ALL
   USING (

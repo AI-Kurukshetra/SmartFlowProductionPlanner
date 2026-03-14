@@ -19,6 +19,11 @@ interface WorkOrder {
   product?: { name: string; sku?: string };
 }
 
+interface ActiveRun {
+  work_order_id: string;
+  id: string;
+}
+
 export default function WorkOrdersPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
@@ -68,6 +73,18 @@ export default function WorkOrdersPage() {
             .order("created_at", { ascending: false })
         : { data: [] };
     setWorkOrders(orders ?? []);
+
+    const woIds = (orders ?? []).map((o) => o.id);
+    if (woIds.length > 0) {
+      const { data: runs } = await supabase
+        .from("production_runs")
+        .select("id, work_order_id")
+        .in("work_order_id", woIds)
+        .is("end_time", null);
+      setActiveRuns((runs ?? []) as ActiveRun[]);
+    } else {
+      setActiveRuns([]);
+    }
 
     setLoading(false);
   }, [supabase]);
@@ -120,47 +137,78 @@ export default function WorkOrdersPage() {
       return;
     }
 
-    const now = new Date().toISOString();
-
     if (newStatus === "in_progress") {
-      const { data: run, error: runErr } = await supabase
-        .from("production_runs")
-        .insert({
-          work_order_id: id,
-          produced_quantity: 0,
-          start_time: now,
-        })
-        .select("id")
-        .single();
-
-      if (!runErr && run) {
-        await supabase.from("production_logs").insert({
-          production_run_id: run.id,
-          event: "started",
-        });
-      }
-    } else if (newStatus === "completed") {
-      const { data: runs } = await supabase
-        .from("production_runs")
-        .select("id")
-        .eq("work_order_id", id)
-        .is("end_time", null);
-
-      const run = runs?.[0];
-      if (run) {
-        const wo = workOrders.find((o) => o.id === id);
-        await supabase
-          .from("production_runs")
-          .update({ end_time: now, produced_quantity: wo?.quantity ?? 0 })
-          .eq("id", run.id);
-
-        await supabase.from("production_logs").insert({
-          production_run_id: run.id,
-          event: "completed",
-        });
+      const already = activeRuns.some((r) => r.work_order_id === id);
+      if (!already) {
+        await startProductionRun(id);
       }
     }
 
+    if (newStatus === "completed") {
+      await completeProductionRunForWorkOrder(id);
+    }
+
+    await fetchData();
+  }
+
+  async function startProductionRun(workOrderId: string) {
+    if (!supabase) return;
+    setProductionBusy(workOrderId);
+    const { data: run, error } = await supabase
+      .from("production_runs")
+      .insert({
+        work_order_id: workOrderId,
+        start_time: new Date().toISOString(),
+        produced_quantity: 0,
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      setProductionBusy(null);
+      alert(error.message);
+      return;
+    }
+
+    if (run?.id) {
+      await supabase.from("production_logs").insert([
+        { production_run_id: run.id, event: "work_order_started" },
+        { production_run_id: run.id, event: "production_run_created" },
+      ]);
+    }
+    setProductionBusy(null);
+  }
+
+  async function completeProductionRunForWorkOrder(workOrderId: string) {
+    if (!supabase) return;
+    const run = activeRuns.find((r) => r.work_order_id === workOrderId);
+    if (!run) return;
+    const wo = workOrders.find((w) => w.id === workOrderId);
+    await supabase
+      .from("production_runs")
+      .update({
+        end_time: new Date().toISOString(),
+        produced_quantity: wo?.quantity ?? 0,
+      })
+      .eq("id", run.id);
+    await supabase.from("production_logs").insert({
+      production_run_id: run.id,
+      event: "production_completed",
+    });
+  }
+
+  async function manualStartProduction(workOrderId: string) {
+    if (!supabase) return;
+    if (activeRuns.some((r) => r.work_order_id === workOrderId)) return;
+    await startProductionRun(workOrderId);
+    await supabase.from("work_orders").update({ status: "in_progress" }).eq("id", workOrderId);
+    await fetchData();
+  }
+
+  async function manualCompleteProduction(workOrderId: string) {
+    if (!supabase) return;
+    await completeProductionRunForWorkOrder(workOrderId);
+    await supabase.from("work_orders").update({ status: "completed" }).eq("id", workOrderId);
     await fetchData();
   }
 
@@ -244,6 +292,26 @@ export default function WorkOrdersPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
+                  {!activeRuns.some((r) => r.work_order_id === wo.id) && wo.status !== "completed" && wo.status !== "cancelled" && (
+                    <button
+                      type="button"
+                      disabled={productionBusy === wo.id}
+                      onClick={() => manualStartProduction(wo.id)}
+                      className="rounded-lg bg-cyan-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-cyan-700 disabled:opacity-50"
+                    >
+                      {productionBusy === wo.id ? "Starting…" : "Start production"}
+                    </button>
+                  )}
+                  {activeRuns.some((r) => r.work_order_id === wo.id) && (
+                    <button
+                      type="button"
+                      disabled={productionBusy === wo.id}
+                      onClick={() => manualCompleteProduction(wo.id)}
+                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                    >
+                      Complete production
+                    </button>
+                  )}
                   <select
                     value={wo.status}
                     onChange={(e) => handleStatusUpdate(wo.id, e.target.value)}

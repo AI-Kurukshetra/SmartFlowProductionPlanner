@@ -9,6 +9,7 @@ const FLOW_STEPS = [
   { label: "Work Orders", href: "/dashboard/work-orders", desc: "Production orders to fulfill" },
   { label: "Operations", href: "/dashboard/work-orders", desc: "Steps within each work order" },
   { label: "Scheduling", href: "/dashboard/scheduler", desc: "Assign to resources & time slots" },
+  { label: "Production", href: "/dashboard/production", desc: "Runs & production_logs" },
   { label: "Production Tracking", href: "/dashboard/reports", desc: "Track progress & KPIs" },
 ];
 
