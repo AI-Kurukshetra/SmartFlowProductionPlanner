@@ -21,7 +21,7 @@ export default async function ResourcesPage() {
         .order("name")
     : { data: [] };
 
-  const workCenterIds = [...new Set((resources ?? []).map((r) => r.work_center_id))];
+  const workCenterIds = [...new Set((resources ?? []).map((r: { work_center_id: string }) => r.work_center_id))];
   const { data: workCenters } = workCenterIds.length
     ? await supabase.from("work_centers").select("id, name, plant_id").in("id", workCenterIds)
     : { data: [] };
@@ -30,7 +30,7 @@ export default async function ResourcesPage() {
     : { data: [] };
 
   const wcMap = Object.fromEntries((workCenters ?? []).map((wc) => [wc.id, wc]));
-  const plantMap = Object.fromEntries((plants ?? []).map((p) => [p.id, p]));
+  const plantMap = Object.fromEntries((plants ?? []).map((p: { id: string; name: string }) => [p.id, p]));
 
   return (
     <div className="px-6 py-8">

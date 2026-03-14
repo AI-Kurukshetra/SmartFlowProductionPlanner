@@ -63,7 +63,7 @@ export default function ShiftPatternsPage() {
       .from("shift_patterns")
       .select("id, plant_id, name, start_time, end_time, plant:plants(name)")
       .order("name");
-    setShiftPatterns(spData ?? []);
+    setShiftPatterns((spData ?? []) as unknown as ShiftPattern[]);
     setLoading(false);
   }, [supabase]);
 

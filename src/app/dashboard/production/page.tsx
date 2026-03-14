@@ -51,7 +51,7 @@ export default function ProductionTrackingPage() {
       .from("products")
       .select("id")
       .eq("organization_id", appUser.organization_id);
-    const productIds = (products ?? []).map((p) => p.id);
+    const productIds = (products ?? []).map((p: { id: string }) => p.id);
     if (productIds.length === 0) {
       setRuns([]);
       setLoading(false);
@@ -62,7 +62,7 @@ export default function ProductionTrackingPage() {
       .from("work_orders")
       .select("id")
       .in("product_id", productIds);
-    const ids = (woIds ?? []).map((w) => w.id);
+    const ids = (woIds ?? []).map((w: { id: string }) => w.id);
     if (ids.length === 0) {
       setRuns([]);
       setLoading(false);
@@ -77,10 +77,10 @@ export default function ProductionTrackingPage() {
       .in("work_order_id", ids)
       .order("start_time", { ascending: false });
 
-    const list = (runsData ?? []) as ProductionRun[];
+    const list = (runsData ?? []) as unknown as ProductionRun[];
     setRuns(list);
 
-    const runIds = list.map((r) => r.id);
+    const runIds = list.map((r: ProductionRun) => r.id);
     if (runIds.length > 0) {
       const { data: logs } = await supabase
         .from("production_logs")

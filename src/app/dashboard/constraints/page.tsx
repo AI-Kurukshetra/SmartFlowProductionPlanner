@@ -61,7 +61,7 @@ export default function ConstraintsPage() {
       .from("constraints")
       .select("id, resource_id, type, value, resource:resources(name)")
       .order("type");
-    setConstraints(conData ?? []);
+    setConstraints((conData ?? []) as unknown as Constraint[]);
     setLoading(false);
   }, [supabase]);
 

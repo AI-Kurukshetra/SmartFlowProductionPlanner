@@ -7,7 +7,7 @@ type MemberRow = {
   email: string;
   role: "admin" | "planner" | "supervisor" | "operator";
   created_at: string;
-  user_roles: { roles: { name: string } | null }[] | null;
+  user_roles: { roles: { name: string } | { name: string }[] | null }[] | null;
 };
 
 function displayName(member: Pick<MemberRow, "name" | "email">) {
@@ -71,8 +71,8 @@ export default async function ProfilePage() {
           </div>
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Role</p>
-            <span className={`role-badge role-${getEffectiveRole(appUser as MemberRow)} mt-1`}>
-              {getEffectiveRole(appUser as MemberRow)}
+            <span className={`role-badge role-${getEffectiveRole(appUser as unknown as MemberRow)} mt-1`}>
+              {getEffectiveRole(appUser as unknown as MemberRow)}
             </span>
           </div>
           <div>
@@ -89,11 +89,11 @@ export default async function ProfilePage() {
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Organization Users</h2>
             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">
-              {(members as MemberRow[] | null)?.length ?? 0} users
+              {(members as unknown as MemberRow[] | null)?.length ?? 0} users
             </span>
           </div>
 
-          {(members as MemberRow[] | null)?.length ? (
+          {(members as unknown as MemberRow[] | null)?.length ? (
             <div className="mt-4 overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead>
@@ -113,7 +113,7 @@ export default async function ProfilePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                  {(members as MemberRow[]).map((member) => (
+                  {(members as unknown as MemberRow[]).map((member) => (
                     <tr key={member.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-700/40">
                       <td className="px-3 py-3 text-sm font-medium text-slate-800 dark:text-slate-200">
                         {displayName(member)}

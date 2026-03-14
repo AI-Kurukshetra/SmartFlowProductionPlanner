@@ -66,7 +66,7 @@ export default function DemandsPage() {
       .select("id, product_id, quantity, due_date, status, source, notes, work_order_id, product:products(name)")
       .eq("organization_id", appUser.organization_id)
       .order("due_date", { ascending: true });
-    setDemands(demData ?? []);
+    setDemands((demData ?? []) as unknown as Demand[]);
     setLoading(false);
   }, [supabase]);
 

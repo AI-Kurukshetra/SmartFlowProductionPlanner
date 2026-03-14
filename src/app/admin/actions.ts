@@ -58,7 +58,7 @@ export async function inviteUserAction(formData: FormData) {
 
   const redirectTo = `${getOriginFromHeaders(h)}/auth/callback?next=/auth/set-password`;
 
-  const { data: listData } = await adminClient.auth.admin.listUsers({ per_page: 1000 });
+  const { data: listData } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
   const existingUser = listData?.users?.find((u) => u.email?.toLowerCase() === email);
   if (existingUser) {
     await supabase.from("user_invites").update({ status: "revoked" }).eq("id", inviteRow.id);

@@ -74,7 +74,7 @@ export default async function AdminPermissionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-              {(permissions as PermissionRow[] | null)?.map((p) => (
+              {(permissions as unknown as PermissionRow[] | null)?.map((p) => (
                 <tr key={p.id}>
                   <td className="px-3 py-3 text-sm text-slate-700 dark:text-slate-300">{p.module}</td>
                   <td className="px-3 py-3 text-sm font-medium text-slate-800 dark:text-slate-200">{p.name}</td>

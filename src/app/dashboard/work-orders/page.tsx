@@ -65,7 +65,7 @@ export default function WorkOrdersPage() {
       .order("name");
     setProducts(prods ?? []);
 
-    const productIds = (prods ?? []).map((p) => p.id);
+    const productIds = (prods ?? []).map((p: { id: string }) => p.id);
     const { data: orders } =
       productIds.length > 0
         ? await supabase
@@ -74,9 +74,9 @@ export default function WorkOrdersPage() {
             .in("product_id", productIds)
             .order("created_at", { ascending: false })
         : { data: [] };
-    setWorkOrders(orders ?? []);
+    setWorkOrders((orders ?? []) as unknown as WorkOrder[]);
 
-    const woIds = (orders ?? []).map((o) => o.id);
+    const woIds = (orders ?? []).map((o: { id: string }) => o.id);
     if (woIds.length > 0) {
       const { data: runs } = await supabase
         .from("production_runs")

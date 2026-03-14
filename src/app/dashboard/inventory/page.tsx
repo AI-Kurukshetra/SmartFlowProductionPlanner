@@ -65,7 +65,7 @@ export default function InventoryPage() {
       .from("inventory")
       .select("id, plant_id, material_name, quantity, unit, plant:plants(name)")
       .order("material_name");
-    setInventory(invData ?? []);
+    setInventory((invData ?? []) as unknown as InventoryItem[]);
 
     setLoading(false);
   }, [supabase]);

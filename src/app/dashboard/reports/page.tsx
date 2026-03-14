@@ -27,7 +27,7 @@ export default async function ReportsPage() {
   let woCount = 0;
   if (appUser?.organization_id) {
     const { data: productIds } = await supabase.from("products").select("id").eq("organization_id", appUser.organization_id);
-    const ids = productIds?.map((p) => p.id) ?? [];
+    const ids = productIds?.map((p: { id: string }) => p.id) ?? [];
     if (ids.length > 0) {
       const { count } = await supabase.from("work_orders").select("id", { count: "exact", head: true }).in("product_id", ids);
       woCount = count ?? 0;

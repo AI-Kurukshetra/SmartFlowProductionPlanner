@@ -47,7 +47,7 @@ export default function QualityGatesPage() {
       .select("id, name, description, type, sequence")
       .eq("organization_id", appUser.organization_id)
       .order("sequence");
-    setGates(data ?? []);
+    setGates((data ?? []) as unknown as QualityGate[]);
     setLoading(false);
   }, [supabase]);
 

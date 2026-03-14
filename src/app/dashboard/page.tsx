@@ -49,13 +49,13 @@ export default async function DashboardPage() {
         .eq("organization_id", appUser.organization_id)
     : { data: [] };
 
-  const productIds = (products ?? []).map((p) => p.id);
+  const productIds = (products ?? []).map((p: { id: string }) => p.id);
   const { data: workOrders } =
     appUser?.organization_id && productIds.length > 0
       ? await supabase.from("work_orders").select("id").in("product_id", productIds)
       : { data: [] };
 
-  const plantIds = (plants ?? []).map((p) => p.id);
+  const plantIds = (plants ?? []).map((p: { id: string }) => p.id);
   const { data: inventory } =
     appUser?.organization_id && plantIds.length > 0
       ? await supabase

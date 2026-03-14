@@ -80,7 +80,7 @@ export default function ExceptionsPage() {
       .select("id, type, resource_id, work_order_id, description, severity, occurred_at, resolved_at, resource:resources(name)")
       .eq("organization_id", appUser.organization_id)
       .order("occurred_at", { ascending: false });
-    setExceptions(exData ?? []);
+    setExceptions((exData ?? []) as unknown as Exception[]);
     setLoading(false);
   }, [supabase]);
 

@@ -45,7 +45,7 @@ export default function SuppliersPage() {
       .select("id, name, contact_email")
       .eq("organization_id", appUser.organization_id)
       .order("name");
-    setSuppliers(data ?? []);
+    setSuppliers((data ?? []) as unknown as Supplier[]);
     setLoading(false);
   }, [supabase]);
 

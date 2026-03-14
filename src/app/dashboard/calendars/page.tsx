@@ -62,7 +62,7 @@ export default function CalendarsPage() {
       .from("calendars")
       .select("id, plant_id, name, date, is_working_day, notes, plant:plants(name)")
       .order("date", { ascending: false });
-    setEntries(calData ?? []);
+    setEntries((calData ?? []) as unknown as CalendarEntry[]);
     setLoading(false);
   }, [supabase]);
 
@@ -148,7 +148,7 @@ export default function CalendarsPage() {
         ) : entries.length ? (
           <ul className="divide-y divide-slate-200 dark:divide-slate-700">
             {entries.map((e) => {
-              const plantName = (e.plant as { name?: string })?.name ?? "Plant";
+              const plantName = (Array.isArray(e.plant) ? e.plant[0]?.name : e.plant?.name) ?? "Plant";
               return (
                 <li
                   key={e.id}
