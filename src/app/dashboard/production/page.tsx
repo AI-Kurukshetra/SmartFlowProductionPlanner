@@ -11,7 +11,7 @@ interface ProductionRun {
   produced_quantity: number;
   start_time: string;
   end_time: string | null;
-  work_order?: { quantity: number; product?: { name?: string } };
+  work_order?: { quantity: number; product?: { name?: string } | { name?: string }[] } | { quantity: number; product?: { name?: string } | { name?: string }[] }[];
 }
 
 interface ProductionLog {
@@ -51,7 +51,7 @@ export default function ProductionTrackingPage() {
       .from("products")
       .select("id")
       .eq("organization_id", appUser.organization_id);
-    const productIds = (products ?? []).map((p) => p.id);
+    const productIds = (products ?? []).map((p: { id: string }) => p.id);
     if (productIds.length === 0) {
       setRuns([]);
       setLoading(false);
@@ -62,7 +62,7 @@ export default function ProductionTrackingPage() {
       .from("work_orders")
       .select("id")
       .in("product_id", productIds);
-    const ids = (woIds ?? []).map((w) => w.id);
+    const ids = (woIds ?? []).map((w: { id: string }) => w.id);
     if (ids.length === 0) {
       setRuns([]);
       setLoading(false);

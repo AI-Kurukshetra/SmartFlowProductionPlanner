@@ -20,12 +20,13 @@ export default function SetPasswordPage() {
       setCheckingAuth(false);
       return;
     }
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
       setCheckingAuth(false);
-      if (!user) {
+      if (!data.user) {
         router.replace("/login?message=Please sign in to set your password");
       }
-    });
+    })();
   }, [supabase, router]);
 
   async function handleSubmit(e: React.FormEvent) {

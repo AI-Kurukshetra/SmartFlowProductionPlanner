@@ -18,7 +18,7 @@ interface Exception {
   severity: string;
   occurred_at: string;
   resolved_at: string | null;
-  resource?: { name: string };
+  resource?: { name: string } | { name: string }[];
 }
 
 function formatDateTime(iso: string) {

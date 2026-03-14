@@ -13,7 +13,7 @@ interface BOM {
   id: string;
   product_id: string;
   version: number;
-  products?: { name: string; sku?: string };
+  products?: { name: string; sku?: string } | { name: string; sku?: string }[];
 }
 
 interface BOMItem {

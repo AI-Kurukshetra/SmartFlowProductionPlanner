@@ -15,7 +15,7 @@ interface ShiftPattern {
   name: string;
   start_time: string;
   end_time: string;
-  plant?: { name: string };
+  plant?: { name: string } | { name: string }[];
 }
 
 export default function ShiftPatternsPage() {

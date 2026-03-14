@@ -19,7 +19,7 @@ interface Demand {
   source: string;
   notes: string | null;
   work_order_id: string | null;
-  product?: { name: string };
+  product?: { name: string } | { name: string }[];
 }
 
 export default function DemandsPage() {

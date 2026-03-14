@@ -14,7 +14,7 @@ interface Constraint {
   resource_id: string;
   type: string;
   value: string | null;
-  resource?: { name: string };
+  resource?: { name: string } | { name: string }[];
 }
 
 export default function ConstraintsPage() {

@@ -18,7 +18,7 @@ interface InventoryItem {
   material_name: string;
   quantity: number;
   unit: string;
-  plant?: { name: string };
+  plant?: { name: string } | { name: string }[];
 }
 
 export default function InventoryPage() {

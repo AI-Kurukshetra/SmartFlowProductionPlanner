@@ -16,7 +16,7 @@ interface CalendarEntry {
   date: string;
   is_working_day: boolean;
   notes: string | null;
-  plant?: { name: string };
+  plant?: { name: string } | { name: string }[];
 }
 
 export default function CalendarsPage() {

@@ -5,7 +5,7 @@ type RoleRow = {
   id: string;
   name: string;
   description: string | null;
-  role_permissions: { permissions: { name: string; module: string } | null }[];
+  role_permissions: { permissions: { name: string; module: string } | { name: string; module: string }[] | null }[];
 };
 
 export default async function RolesPermissionsPage() {
@@ -54,11 +54,14 @@ export default async function RolesPermissionsPage() {
               {role.description && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{role.description}</p>}
               <ul className="mt-4 space-y-2">
                 {role.role_permissions?.length ? (
-                  role.role_permissions.map((rp, idx) => (
-                    <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
-                      {rp.permissions?.module} / {rp.permissions?.name}
-                    </li>
-                  ))
+                  role.role_permissions.map((rp, idx) => {
+                    const permission = Array.isArray(rp.permissions) ? rp.permissions[0] : rp.permissions;
+                    return (
+                      <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
+                        {permission?.module} / {permission?.name}
+                      </li>
+                    );
+                  })
                 ) : (
                   <li className="text-sm text-slate-500 dark:text-slate-400">No permissions assigned.</li>
                 )}

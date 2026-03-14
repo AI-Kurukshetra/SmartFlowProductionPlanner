@@ -16,7 +16,7 @@ interface MaintenanceWindow {
   end_time: string;
   reason: string | null;
   status: string;
-  resource?: { name: string };
+  resource?: { name: string } | { name: string }[];
 }
 
 function formatDateTime(iso: string) {

@@ -7,7 +7,7 @@ type MemberRow = {
   email: string;
   role: "admin" | "planner" | "supervisor" | "operator";
   created_at: string;
-  user_roles: { roles: { name: string } | null }[] | null;
+  user_roles: { roles: { name: string } | { name: string }[] | null }[] | null;
 };
 
 function displayName(member: Pick<MemberRow, "name" | "email">) {

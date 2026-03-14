@@ -7,7 +7,7 @@ type UserWithRole = {
   email: string;
   role: string;
   created_at: string;
-  user_roles: { roles: { name: string } | null }[] | null;
+  user_roles: { roles: { name: string } | { name: string }[] | null }[] | null;
 };
 
 function getDisplayName(user: Pick<UserWithRole, "name" | "email">) {
@@ -15,7 +15,9 @@ function getDisplayName(user: Pick<UserWithRole, "name" | "email">) {
 }
 
 function getRole(user: UserWithRole) {
-  return user.user_roles?.[0]?.roles?.name ?? user.role;
+  const rolesField = user.user_roles?.[0]?.roles;
+  const roleName = Array.isArray(rolesField) ? rolesField[0]?.name : rolesField?.name;
+  return roleName ?? user.role;
 }
 
 export default async function UsersPage() {
