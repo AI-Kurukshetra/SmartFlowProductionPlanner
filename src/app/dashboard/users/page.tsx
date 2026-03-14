@@ -16,13 +16,8 @@ function getDisplayName(user: Pick<UserWithRole, "name" | "email">) {
 
 function getRole(user: UserWithRole) {
   const rolesField = user.user_roles?.[0]?.roles;
-<<<<<<< HEAD
   const roleName = Array.isArray(rolesField) ? rolesField[0]?.name : rolesField?.name;
   return roleName ?? user.role;
-=======
-  const name = Array.isArray(rolesField) ? rolesField[0]?.name : rolesField?.name;
-  return name ?? user.role;
->>>>>>> 4939a8e5cbcd5c09533a3fb7263830e33c987803
 }
 
 export default async function UsersPage() {

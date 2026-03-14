@@ -55,17 +55,10 @@ export default async function RolesPermissionsPage() {
               <ul className="mt-4 space-y-2">
                 {role.role_permissions?.length ? (
                   role.role_permissions.map((rp, idx) => {
-<<<<<<< HEAD
                     const permission = Array.isArray(rp.permissions) ? rp.permissions[0] : rp.permissions;
                     return (
                       <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
                         {permission?.module} / {permission?.name}
-=======
-                    const perm = Array.isArray(rp.permissions) ? rp.permissions[0] : rp.permissions;
-                    return (
-                      <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
-                        {perm?.module} / {perm?.name}
->>>>>>> 4939a8e5cbcd5c09533a3fb7263830e33c987803
                       </li>
                     );
                   })
