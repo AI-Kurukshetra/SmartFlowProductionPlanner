@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default async function DashboardLayout({
   children,
@@ -22,52 +23,34 @@ export default async function DashboardLayout({
     .single();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/dashboard" className="text-lg font-semibold text-slate-800">
-            Smart Product Planner
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-800">
-              Dashboard
-            </Link>
-            <Link href="/dashboard/plants" className="text-sm text-slate-600 hover:text-slate-800">
-              Plants
-            </Link>
-            <Link href="/dashboard/resources" className="text-sm text-slate-600 hover:text-slate-800">
-              Resources
-            </Link>
-            <Link href="/dashboard/products" className="text-sm text-slate-600 hover:text-slate-800">
-              Products
-            </Link>
-            <Link href="/dashboard/boms" className="text-sm text-slate-600 hover:text-slate-800">
-              BOMs
-            </Link>
-            <Link href="/dashboard/work-orders" className="text-sm text-slate-600 hover:text-slate-800">
-              Work orders
-            </Link>
-            <Link href="/dashboard/scheduler" className="text-sm text-slate-600 hover:text-slate-800">
-              Scheduler
-            </Link>
-            <Link href="/dashboard/inventory" className="text-sm text-slate-600 hover:text-slate-800">
-              Inventory
-            </Link>
-            <Link href="/dashboard/reports" className="text-sm text-slate-600 hover:text-slate-800">
-              Reports
-            </Link>
-            <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
-              <span className="text-sm text-slate-600">{appUser?.name ?? user.email}</span>
-              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 capitalize">
-                {appUser?.role ?? "operator"}
-              </span>
-              <SignOutButton />
-            </div>
-          </nav>
-        </div>
-      </header>
+    <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900">
+      <DashboardSidebar />
 
-      <main className="mx-auto max-w-6xl">{children}</main>
+      <div className="flex flex-1 flex-col">
+        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+            aria-label="Toggle menu"
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <ThemeToggle />
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{appUser?.name ?? user.email}</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-sm font-semibold text-violet-700 dark:bg-violet-900/50 dark:text-violet-300">
+              {(appUser?.name ?? user.email)?.[0]?.toUpperCase() ?? "U"}
+            </div>
+            <SignOutButton />
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-auto p-6 dark:bg-slate-900">{children}</main>
+      </div>
     </div>
   );
 }

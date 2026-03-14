@@ -30,7 +30,7 @@ export default async function PlantsPage() {
       </div>
       <p className="mt-1 text-slate-600">Manage manufacturing plants and facilities</p>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white">
+      <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50">
         {plants?.length ? (
           <ul className="divide-y divide-slate-200">
             {plants.map((p) => (
