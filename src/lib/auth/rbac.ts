@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type AppUserContext = {
   id: string;
@@ -6,6 +8,52 @@ type AppUserContext = {
   role: string;
   is_active: boolean;
 };
+
+function displayNameFromAuthUser(user: {
+  email?: string | null;
+  user_metadata?: Record<string, unknown>;
+}) {
+  const meta = user.user_metadata ?? {};
+  const n =
+    (typeof meta.name === "string" && meta.name) ||
+    (typeof meta.full_name === "string" && meta.full_name) ||
+    "";
+  if (n.trim()) return n.trim();
+  const email = user.email ?? "";
+  return email ? email.split("@")[0] || "User" : "User";
+}
+
+/**
+ * Ensures a row exists in public.app_users for this auth user.
+ * Needed when the on_auth_user_created trigger was missing or failed (legacy accounts).
+ * Uses service role once; safe because we only insert for the current session's user id.
+ */
+async function ensureAppUserRow(userId: string, email: string, name: string) {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) return false;
+  try {
+    const admin = createAdminClient();
+    const base = {
+      id: userId,
+      email: email || "",
+      name: name || "User",
+      role: "operator" as const,
+      is_active: true,
+    };
+    let { error } = await admin.from("app_users").upsert(base, {
+      onConflict: "id",
+      ignoreDuplicates: true,
+    });
+    if (error?.message?.includes("is_active")) {
+      const { id, email: em, name: nm, role } = base;
+      ({ error } = await admin
+        .from("app_users")
+        .upsert({ id, email: em, name: nm, role }, { onConflict: "id", ignoreDuplicates: true }));
+    }
+    return !error;
+  } catch {
+    return false;
+  }
+}
 
 export async function getCurrentUserContext() {
   const supabase = await createClient();
@@ -15,11 +63,21 @@ export async function getCurrentUserContext() {
 
   if (!user) return { supabase, user: null, appUser: null as AppUserContext | null };
 
-  const { data: appUser } = await supabase
+  let { data: appUser } = await supabase
     .from("app_users")
     .select("id, organization_id, role, is_active")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (!appUser) {
+    await ensureAppUserRow(user.id, user.email ?? "", displayNameFromAuthUser(user));
+    const again = await supabase
+      .from("app_users")
+      .select("id, organization_id, role, is_active")
+      .eq("id", user.id)
+      .maybeSingle();
+    appUser = again.data;
+  }
 
   return { supabase, user, appUser: (appUser as AppUserContext | null) ?? null };
 }
@@ -77,9 +135,8 @@ export async function hasPermission(userId: string, permissionName: string) {
 export async function requirePermission(permissionName: string) {
   const { user, appUser } = await getCurrentUserContext();
 
-  if (!user || !appUser) {
-    throw new Error("Unauthorized");
-  }
+  if (!user) redirect("/login");
+  if (!appUser) redirect("/dashboard/setup-required");
 
   if (!appUser.is_active) {
     throw new Error("Your account is deactivated.");

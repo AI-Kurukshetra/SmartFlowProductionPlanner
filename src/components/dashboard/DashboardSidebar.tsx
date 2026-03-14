@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const TABS = [
+const BASE_TABS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/plants", label: "Plants" },
   { href: "/dashboard/resources", label: "Resources" },
@@ -13,16 +13,26 @@ const TABS = [
   { href: "/dashboard/scheduler", label: "Scheduler" },
   { href: "/dashboard/inventory", label: "Inventory" },
   { href: "/dashboard/reports", label: "Reports" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/roles", label: "Roles & Permissions" },
-  { href: "/dashboard/settings", label: "Settings" },
 ];
 
-export function DashboardSidebar() {
+const ADMIN_TABS = [
+  { href: "/dashboard/admin/users", label: "Users" },
+  { href: "/dashboard/admin/roles", label: "Roles & Permissions" },
+];
+
+const SETTINGS_TAB = { href: "/dashboard/settings", label: "Settings" };
+
+export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
 
+  const tabs = [
+    ...BASE_TABS,
+    ...(isAdmin ? ADMIN_TABS : []),
+    SETTINGS_TAB,
+  ];
+
   return (
-    <aside className="flex w-60 shrink-0 flex-col bg-gradient-to-b from-violet-700 to-violet-800 shadow-xl dark:from-violet-900 dark:to-violet-950">
+    <aside className="flex h-screen w-60 shrink-0 flex-col overflow-y-auto bg-gradient-to-b from-violet-700 to-violet-800 shadow-xl dark:from-violet-900 dark:to-violet-950">
       <div className="flex items-center gap-3 p-6">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
           <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +46,7 @@ export function DashboardSidebar() {
       </div>
       <p className="px-6 pb-2 text-xs font-medium uppercase tracking-wider text-violet-300">Menu</p>
       <nav className="flex flex-1 flex-col gap-0.5 px-4 pb-6">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = pathname === tab.href;
           return (
             <Link

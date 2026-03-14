@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { getEffectiveRoleName } from "@/lib/auth/rbac";
 
 export default async function DashboardLayout({
   children,
@@ -21,14 +22,17 @@ export default async function DashboardLayout({
     .from("app_users")
     .select("name, role")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  const effectiveRole = await getEffectiveRoleName(user.id);
+  const isAdmin = effectiveRole === "admin";
 
   return (
-    <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900">
-      <DashboardSidebar />
+    <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-900">
+      <DashboardSidebar isAdmin={isAdmin} />
 
-      <div className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="flex items-center gap-2">
           <button
             type="button"
@@ -39,9 +43,9 @@ export default async function DashboardLayout({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <ThemeToggle />
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Link
               href="/dashboard/profile"
               className="text-sm font-medium text-slate-700 hover:text-violet-700 dark:text-slate-200 dark:hover:text-violet-300"

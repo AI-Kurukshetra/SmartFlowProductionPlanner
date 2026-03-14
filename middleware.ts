@@ -27,6 +27,9 @@ async function getSupabaseFromMiddleware(req: NextRequest, res: NextResponse) {
 }
 
 function requiredPermission(pathname: string) {
+  if (pathname.startsWith("/dashboard/admin/users")) return "manage_users";
+  if (pathname.startsWith("/dashboard/admin/roles")) return "manage_system";
+  if (pathname.startsWith("/dashboard/admin/permissions")) return "manage_system";
   if (pathname.startsWith("/admin/users")) return ADMIN_PERMISSION_MAP["/admin/users"];
   if (pathname.startsWith("/admin/roles")) return ADMIN_PERMISSION_MAP["/admin/roles"];
   if (pathname.startsWith("/admin/permissions")) return ADMIN_PERMISSION_MAP["/admin/permissions"];
@@ -68,9 +71,9 @@ export async function middleware(req: NextRequest) {
     .maybeSingle();
 
   if (!appUser || appUser.is_active === false) {
+    if (pathname === "/dashboard/setup-required") return res;
     const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("error", "inactive");
+    url.pathname = "/dashboard/setup-required";
     return NextResponse.redirect(url);
   }
 
