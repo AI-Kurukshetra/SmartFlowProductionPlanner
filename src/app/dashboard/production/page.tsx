@@ -77,10 +77,10 @@ export default function ProductionTrackingPage() {
       .in("work_order_id", ids)
       .order("start_time", { ascending: false });
 
-    const list = (runsData ?? []) as ProductionRun[];
+    const list = (runsData ?? []) as unknown as ProductionRun[];
     setRuns(list);
 
-    const runIds = list.map((r) => r.id);
+    const runIds = list.map((r: ProductionRun) => r.id);
     if (runIds.length > 0) {
       const { data: logs } = await supabase
         .from("production_logs")

@@ -16,8 +16,13 @@ function getDisplayName(user: Pick<UserWithRole, "name" | "email">) {
 
 function getRole(user: UserWithRole) {
   const rolesField = user.user_roles?.[0]?.roles;
+<<<<<<< HEAD
   const roleName = Array.isArray(rolesField) ? rolesField[0]?.name : rolesField?.name;
   return roleName ?? user.role;
+=======
+  const name = Array.isArray(rolesField) ? rolesField[0]?.name : rolesField?.name;
+  return name ?? user.role;
+>>>>>>> 4939a8e5cbcd5c09533a3fb7263830e33c987803
 }
 
 export default async function UsersPage() {
@@ -62,7 +67,7 @@ export default async function UsersPage() {
       <p className="mt-1 text-slate-600 dark:text-slate-400">Who has which role in your organization.</p>
 
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50">
-        {(users as UserWithRole[] | null)?.length ? (
+        {(users as unknown as UserWithRole[] | null)?.length ? (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
               <thead>
@@ -82,7 +87,7 @@ export default async function UsersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                {(users as UserWithRole[]).map((u) => (
+                {(users as unknown as UserWithRole[]).map((u) => (
                   <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-700/40">
                     <td className="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200">{getDisplayName(u)}</td>
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{u.email}</td>

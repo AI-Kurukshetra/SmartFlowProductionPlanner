@@ -67,7 +67,7 @@ export default async function AdminRolesPage() {
         </form>
       </section>
 
-      {(roles as RoleRow[] | null)?.map((role) => {
+      {(roles as unknown as RoleRow[] | null)?.map((role) => {
         const selected = new Set((role.role_permissions ?? []).map((rp) => rp.permission_id));
         return (
           <section
@@ -85,7 +85,7 @@ export default async function AdminRolesPage() {
             <form action={updateRolePermissionsAction} className="mt-4">
               <input type="hidden" name="role_id" value={role.id} />
               <div className="grid gap-2 md:grid-cols-2">
-                {(permissions as PermissionRow[] | null)?.map((perm) => (
+                {(permissions as unknown as PermissionRow[] | null)?.map((perm) => (
                   <label key={perm.id} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700">
                     <input type="checkbox" name="permission_ids" value={perm.id} defaultChecked={selected.has(perm.id)} />
                     <span className="text-slate-700 dark:text-slate-300">

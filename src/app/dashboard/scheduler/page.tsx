@@ -34,7 +34,7 @@ export default async function SchedulerPage() {
     .select("id")
     .eq("organization_id", appUser.organization_id);
 
-  const productIds = (products ?? []).map((p) => p.id);
+  const productIds = (products ?? []).map((p: { id: string }) => p.id);
   const { data: workOrders } =
     productIds.length > 0
       ? await supabase

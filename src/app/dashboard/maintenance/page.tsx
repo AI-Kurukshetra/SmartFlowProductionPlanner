@@ -69,7 +69,7 @@ export default function MaintenancePage() {
       .from("maintenance_windows")
       .select("id, resource_id, start_time, end_time, reason, status, resource:resources(name)")
       .order("start_time", { ascending: false });
-    setWindows(mwData ?? []);
+    setWindows((mwData ?? []) as unknown as MaintenanceWindow[]);
     setLoading(false);
   }, [supabase]);
 

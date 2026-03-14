@@ -41,8 +41,8 @@ export default async function RolesPermissionsPage() {
       <p className="mt-1 text-slate-600 dark:text-slate-400">RBAC matrix for your workspace.</p>
 
       <div className="mt-6 grid gap-4">
-        {(roles as RoleRow[] | null)?.length ? (
-          (roles as RoleRow[]).map((role) => (
+        {(roles as unknown as RoleRow[] | null)?.length ? (
+          (roles as unknown as RoleRow[]).map((role) => (
             <section
               key={role.id}
               className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50"
@@ -55,10 +55,17 @@ export default async function RolesPermissionsPage() {
               <ul className="mt-4 space-y-2">
                 {role.role_permissions?.length ? (
                   role.role_permissions.map((rp, idx) => {
+<<<<<<< HEAD
                     const permission = Array.isArray(rp.permissions) ? rp.permissions[0] : rp.permissions;
                     return (
                       <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
                         {permission?.module} / {permission?.name}
+=======
+                    const perm = Array.isArray(rp.permissions) ? rp.permissions[0] : rp.permissions;
+                    return (
+                      <li key={`${role.id}-${idx}`} className="text-sm text-slate-700 dark:text-slate-300">
+                        {perm?.module} / {perm?.name}
+>>>>>>> 4939a8e5cbcd5c09533a3fb7263830e33c987803
                       </li>
                     );
                   })

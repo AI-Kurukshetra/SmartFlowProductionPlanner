@@ -69,7 +69,7 @@ export default function BOMsPage() {
       .from("boms")
       .select("id, product_id, version, products(id, name, sku)")
       .order("version", { ascending: false });
-    setBoms(bomsData ?? []);
+    setBoms((bomsData ?? []) as unknown as BOM[]);
 
     const bomIds = (bomsData ?? []).map((b: BOM) => b.id);
     if (bomIds.length > 0) {
@@ -207,7 +207,7 @@ export default function BOMsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-medium text-slate-800 dark:text-slate-200">
-                    {(bom.products as { name?: string })?.name ?? "Product"}
+                    {(Array.isArray(bom.products) ? bom.products[0]?.name : bom.products?.name) ?? "Product"}
                   </h2>
                   <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-900/50 dark:text-violet-300">
                     v{bom.version}

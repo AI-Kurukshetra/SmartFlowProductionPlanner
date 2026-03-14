@@ -74,7 +74,7 @@ export default function WorkOrdersPage() {
             .in("product_id", productIds)
             .order("created_at", { ascending: false })
         : { data: [] };
-    setWorkOrders(orders ?? []);
+    setWorkOrders((orders ?? []) as unknown as WorkOrder[]);
 
     const woIds = (orders ?? []).map((o: { id: string }) => o.id);
     if (woIds.length > 0) {
