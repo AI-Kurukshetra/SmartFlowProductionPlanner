@@ -56,7 +56,16 @@ export async function inviteUserAction(formData: FormData) {
     throw new Error(inviteError?.message ?? "Failed to create invite.");
   }
 
-  const redirectTo = `${getOriginFromHeaders(h)}/auth/callback?next=/login`;
+  const redirectTo = `${getOriginFromHeaders(h)}/auth/callback?next=/auth/set-password`;
+
+  const { data: listData } = await adminClient.auth.admin.listUsers({ per_page: 1000 });
+  const existingUser = listData?.users?.find((u) => u.email?.toLowerCase() === email);
+  if (existingUser) {
+    await supabase.from("user_invites").update({ status: "revoked" }).eq("id", inviteRow.id);
+    throw new Error(
+      "A user with this email is already registered. Add them from the Users page or ask them to use Forgot password."
+    );
+  }
 
   const { data: invited, error: authError } = await adminClient.auth.admin.inviteUserByEmail(email, {
     redirectTo,
