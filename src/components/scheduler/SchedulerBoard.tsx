@@ -54,10 +54,12 @@ export function SchedulerBoard({
   initialResources,
   initialWorkOrders,
   initialSchedules,
+  initialNowIso,
 }: {
   initialResources: Resource[];
   initialWorkOrders: WorkOrder[];
   initialSchedules: Schedule[];
+  initialNowIso: string;
 }) {
   const supabase = getSupabaseClient();
   const [submitting, setSubmitting] = useState(false);
@@ -66,7 +68,7 @@ export function SchedulerBoard({
   const [workOrders] = useState<WorkOrder[]>(initialWorkOrders);
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [filterResourceId, setFilterResourceId] = useState("all");
-  const now = useMemo(() => new Date(), []);
+  const now = useMemo(() => new Date(initialNowIso), [initialNowIso]);
   const [form, setForm] = useState<ScheduleForm>({
     work_order_id: initialWorkOrders[0]?.id ?? "",
     resource_id: initialResources[0]?.id ?? "",
@@ -97,7 +99,7 @@ export function SchedulerBoard({
 
   const timelineRange = useMemo(() => {
     if (!visibleSchedules.length) {
-      const start = new Date();
+      const start = new Date(initialNowIso);
       start.setMinutes(0, 0, 0);
       const end = new Date(start.getTime() + 12 * 60 * 60 * 1000);
       return { start, end };
@@ -112,7 +114,7 @@ export function SchedulerBoard({
       start: new Date(min.getTime() - pad),
       end: new Date(max.getTime() + pad),
     };
-  }, [visibleSchedules]);
+  }, [visibleSchedules, initialNowIso]);
 
   const timelineHours = useMemo(
     () => hourRange(timelineRange.start, timelineRange.end),
@@ -182,25 +184,29 @@ export function SchedulerBoard({
   }
 
   if (!supabase) {
-    return <div className="rounded-xl bg-amber-50 p-6 text-amber-800">Supabase not configured.</div>;
+    return (
+      <div className="rounded-xl bg-amber-50 p-6 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+        Supabase not configured.
+      </div>
+    );
   }
 
   return (
     <div className="px-6 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Scheduler</h1>
-          <p className="mt-1 text-slate-600">Work Order -&gt; Machine -&gt; Time Slot</p>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Scheduler</h1>
+          <p className="mt-1 text-slate-600 dark:text-slate-400">Work Order -&gt; Machine -&gt; Time Slot</p>
         </div>
         <div className="flex items-center gap-2">
-          <label htmlFor="resourceFilter" className="text-sm text-slate-600">
+          <label htmlFor="resourceFilter" className="text-sm text-slate-600 dark:text-slate-400">
             Machine
           </label>
           <select
             id="resourceFilter"
             value={filterResourceId}
             onChange={(e) => setFilterResourceId(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-cyan-500 focus:outline-none"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-cyan-500 focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
           >
             <option value="all">All machines</option>
             {resources.map((r) => (
@@ -213,18 +219,18 @@ export function SchedulerBoard({
       </div>
 
       {error && (
-        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800 dark:bg-rose-900/30 dark:text-rose-300">
           {error}
         </div>
       )}
 
-      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Create Schedule Slot</h2>
+      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/40">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Create Schedule Slot</h2>
         <form onSubmit={handleCreateSchedule} className="mt-4 grid gap-3 md:grid-cols-5">
           <select
             value={form.work_order_id}
             onChange={(e) => setForm((prev) => ({ ...prev, work_order_id: e.target.value }))}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             required
           >
             <option value="">Select work order</option>
@@ -238,7 +244,7 @@ export function SchedulerBoard({
           <select
             value={form.resource_id}
             onChange={(e) => setForm((prev) => ({ ...prev, resource_id: e.target.value }))}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             required
           >
             <option value="">Select machine</option>
@@ -253,7 +259,7 @@ export function SchedulerBoard({
             type="datetime-local"
             value={form.start_time}
             onChange={(e) => setForm((prev) => ({ ...prev, start_time: e.target.value }))}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             required
           />
 
@@ -261,7 +267,7 @@ export function SchedulerBoard({
             type="datetime-local"
             value={form.end_time}
             onChange={(e) => setForm((prev) => ({ ...prev, end_time: e.target.value }))}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             required
           />
 
@@ -271,7 +277,7 @@ export function SchedulerBoard({
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, status: e.target.value as ScheduleForm["status"] }))
               }
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             >
               <option value="scheduled">scheduled</option>
               <option value="in_progress">in_progress</option>
@@ -288,9 +294,9 @@ export function SchedulerBoard({
         </form>
       </section>
 
-      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex items-center gap-4 text-xs text-slate-600">
-          <span className="font-medium text-slate-700">Gantt</span>
+      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/40">
+        <div className="mb-4 flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
+          <span className="font-medium text-slate-700 dark:text-slate-200">Gantt</span>
           <span className="inline-flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-sky-500" />
             scheduled
@@ -306,19 +312,24 @@ export function SchedulerBoard({
         </div>
 
         {resources.length === 0 ? (
-          <div className="py-10 text-center text-slate-500">No machines/resources found.</div>
+          <div className="py-10 text-center text-slate-500 dark:text-slate-400">No machines/resources found.</div>
         ) : (
           <div className="overflow-x-auto">
             <div style={{ minWidth: TIMELINE_MIN_WIDTH }}>
               <div className="mb-2 grid grid-cols-[220px_1fr]">
-                <div className="text-xs font-medium text-slate-500">Machine</div>
-                <div className="relative h-8 border-b border-slate-200">
+                <div className="text-xs font-medium text-slate-500 dark:text-slate-400">Machine</div>
+                <div className="relative h-8 border-b border-slate-200 dark:border-slate-700">
                   {timelineHours.map((h) => {
                     const x = ((h.getTime() - timelineRange.start.getTime()) / totalMs) * 100;
                     return (
                       <div key={h.toISOString()} className="absolute top-0 h-full" style={{ left: `${x}%` }}>
-                        <div className="h-full border-l border-dashed border-slate-200 pl-1 text-[10px] text-slate-500">
-                          {h.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        <div className="h-full border-l border-dashed border-slate-200 pl-1 text-[10px] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                          {h.toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                            timeZone: "UTC",
+                          })}
                         </div>
                       </div>
                     );
@@ -329,17 +340,17 @@ export function SchedulerBoard({
               {Array.from(groupedByResource.entries()).map(([resourceId, items]) => {
                 if (filterResourceId !== "all" && resourceId !== filterResourceId) return null;
                 return (
-                  <div key={resourceId} className="grid grid-cols-[220px_1fr] border-b border-slate-100 py-2">
-                    <div className="pr-4 text-sm font-medium text-slate-700">
+                  <div key={resourceId} className="grid grid-cols-[220px_1fr] border-b border-slate-100 py-2 dark:border-slate-700">
+                    <div className="pr-4 text-sm font-medium text-slate-700 dark:text-slate-200">
                       {resourceMap[resourceId] ?? "Machine"}
                     </div>
-                    <div className="relative h-12 rounded-md bg-slate-50">
+                    <div className="relative h-12 rounded-md bg-slate-50 dark:bg-slate-900/50">
                       {timelineHours.map((h) => {
                         const x = ((h.getTime() - timelineRange.start.getTime()) / totalMs) * 100;
                         return (
                           <div
                             key={`${resourceId}-${h.toISOString()}`}
-                            className="absolute top-0 h-full border-l border-slate-100"
+                            className="absolute top-0 h-full border-l border-slate-100 dark:border-slate-700"
                             style={{ left: `${x}%` }}
                           />
                         );
@@ -361,7 +372,7 @@ export function SchedulerBoard({
                             key={s.id}
                             className={`absolute top-2 h-8 rounded-md px-2 text-xs font-medium text-white shadow ${tone}`}
                             style={{ left: `${left}%`, width: `${width}%` }}
-                            title={`${workOrderMap[s.work_order_id] ?? "Work order"} | ${new Date(s.start_time).toLocaleString()} - ${new Date(s.end_time).toLocaleString()}`}
+                            title={`${workOrderMap[s.work_order_id] ?? "Work order"} | ${new Date(s.start_time).toISOString()} - ${new Date(s.end_time).toISOString()}`}
                           >
                             <div className="truncate leading-8">
                               {workOrderMap[s.work_order_id] ?? `Order ${s.work_order_id.slice(0, 6)}`}

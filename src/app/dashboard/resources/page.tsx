@@ -34,36 +34,42 @@ export default async function ResourcesPage() {
 
   return (
     <div className="px-6 py-8">
-      <h1 className="text-2xl font-semibold text-slate-900">Resources</h1>
-      <p className="mt-1 text-slate-600">Machines and manufacturing resources</p>
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Resources</h1>
+      <p className="mt-1 text-slate-600 dark:text-slate-400">Machines and manufacturing resources</p>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
         {(resources ?? []).length ? (
-          <ul className="divide-y divide-slate-200">
+          <ul className="divide-y divide-slate-200 dark:divide-slate-700">
             {(resources ?? []).map((r) => {
               const wc = wcMap[r.work_center_id];
               const plant = wc ? plantMap[wc.plant_id] : null;
               return (
-              <li key={r.id} className="flex items-center justify-between px-6 py-4">
-                <div>
-                  <p className="font-medium text-slate-800">{r.name}</p>
-                  <p className="text-sm text-slate-500">
-                    {plant?.name} → {wc?.name}
-                    {r.type && ` • ${r.type}`}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-slate-600">Capacity: {r.capacity}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${r.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
-                    {r.status}
-                  </span>
-                </div>
-              </li>
+                <li key={r.id} className="flex items-center justify-between px-6 py-4">
+                  <div>
+                    <p className="font-medium text-slate-800 dark:text-slate-200">{r.name}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      {plant?.name} {"->"} {wc?.name}
+                      {r.type && ` - ${r.type}`}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-slate-600 dark:text-slate-300">Capacity: {r.capacity}</span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        r.status === "active"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                          : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                      }`}
+                    >
+                      {r.status}
+                    </span>
+                  </div>
+                </li>
               );
             })}
           </ul>
         ) : (
-          <div className="px-6 py-12 text-center text-slate-500">
+          <div className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
             No resources yet. Add work centers and resources in onboarding.
           </div>
         )}

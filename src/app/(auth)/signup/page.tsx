@@ -30,16 +30,27 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, role },
-      },
-    });
-
-    if (error) {
-      setError(error.message);
+    try {
+      const { error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name, role },
+        },
+      });
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error && err.message === "Failed to fetch"
+          ? "Could not reach Supabase (network). Check NEXT_PUBLIC_SUPABASE_URL in .env.local and restart dev; ensure the Supabase project is not paused."
+          : err instanceof Error
+            ? err.message
+            : "Sign-up failed";
+      setError(msg);
       setLoading(false);
       return;
     }

@@ -80,39 +80,39 @@ export default function ResourcesOnboardingPage() {
 
   if (!supabase) {
     return (
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-        <p className="text-amber-800">Supabase not configured.</p>
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-700/40 dark:bg-amber-900/20">
+        <p className="text-amber-800 dark:text-amber-300">Supabase not configured.</p>
       </div>
     );
   }
 
   if (!plantId) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8">
-        <p className="text-slate-600">Loading...</p>
+      <div className="rounded-xl border border-slate-200 bg-white p-8 dark:border-slate-700 dark:bg-slate-800">
+        <p className="text-slate-600 dark:text-slate-400">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-      <h2 className="text-xl font-semibold text-slate-800">Add resources</h2>
-      <p className="mt-1 text-sm text-slate-500">
+    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/40">
+      <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Add resources</h2>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         Create a work center and add your first machine.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
             {error}
           </div>
         )}
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
-          <h3 className="text-sm font-medium text-slate-700">Work center</h3>
+        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">Work center</h3>
           <div className="mt-3 flex flex-col gap-3">
             <div>
-              <label htmlFor="wc-name" className="mb-1 block text-xs font-medium text-slate-600">
+              <label htmlFor="wc-name" className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Name
               </label>
               <input
@@ -122,11 +122,11 @@ export default function ResourcesOnboardingPage() {
                 onChange={(e) => setWorkCenterName(e.target.value)}
                 placeholder="Assembly Line 1"
                 required
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
             <div>
-              <label htmlFor="wc-code" className="mb-1 block text-xs font-medium text-slate-600">
+              <label htmlFor="wc-code" className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Code (optional)
               </label>
               <input
@@ -135,17 +135,17 @@ export default function ResourcesOnboardingPage() {
                 value={workCenterCode}
                 onChange={(e) => setWorkCenterCode(e.target.value)}
                 placeholder="WC-001"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
-          <h3 className="text-sm font-medium text-slate-700">First machine</h3>
+        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">First machine</h3>
           <div className="mt-3 flex flex-col gap-3">
             <div>
-              <label htmlFor="m-name" className="mb-1 block text-xs font-medium text-slate-600">
+              <label htmlFor="m-name" className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Machine name
               </label>
               <input
@@ -155,11 +155,11 @@ export default function ResourcesOnboardingPage() {
                 onChange={(e) => setMachineName(e.target.value)}
                 placeholder="CNC Machine 1"
                 required
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
             <div>
-              <label htmlFor="m-code" className="mb-1 block text-xs font-medium text-slate-600">
+              <label htmlFor="m-code" className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Code (optional)
               </label>
               <input
@@ -168,11 +168,11 @@ export default function ResourcesOnboardingPage() {
                 value={machineCode}
                 onChange={(e) => setMachineCode(e.target.value)}
                 placeholder="MCH-001"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
             <div>
-              <label htmlFor="m-type" className="mb-1 block text-xs font-medium text-slate-600">
+              <label htmlFor="m-type" className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Type (optional)
               </label>
               <input
@@ -181,7 +181,7 @@ export default function ResourcesOnboardingPage() {
                 value={machineType}
                 onChange={(e) => setMachineType(e.target.value)}
                 placeholder="CNC, Assembly, Packaging..."
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
           </div>
@@ -190,9 +190,9 @@ export default function ResourcesOnboardingPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-teal-600 px-4 py-3 font-medium text-white transition hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-70"
+          className="w-full rounded-lg bg-teal-600 px-4 py-3 font-medium text-white transition hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 disabled:opacity-70"
         >
-          {loading ? "Creating..." : "Complete setup → Dashboard"}
+          {loading ? "Creating..." : "Complete setup -> Dashboard"}
         </button>
       </form>
     </div>

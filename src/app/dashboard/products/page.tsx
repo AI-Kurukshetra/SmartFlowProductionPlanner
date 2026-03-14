@@ -147,9 +147,9 @@ export default function ProductsPage() {
         </button>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50">
+      <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50">
         {loading ? (
-          <div className="px-6 py-12 text-center text-slate-500">Loading...</div>
+          <div className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">Loading...</div>
         ) : products.length ? (
           <ul className="divide-y divide-slate-200 dark:divide-slate-700">
             {products.map((p) => (
@@ -172,7 +172,7 @@ export default function ProductsPage() {
                     href={`/dashboard/boms?product=${p.id}`}
                     className="text-sm font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
                   >
-                    BOMs →
+                    BOMs {"->"}
                   </Link>
                   <button
                     onClick={() => openEditModal(p)}
@@ -219,3 +219,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

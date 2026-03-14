@@ -1,8 +1,8 @@
 import { createBrowserClient, type SupabaseClient } from "@supabase/ssr";
 
 function getEnv() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
   const hasPlaceholderUrl = !!supabaseUrl && supabaseUrl.includes("your-project-ref.supabase.co");
   const hasPlaceholderAnonKey = !!supabaseAnonKey && supabaseAnonKey.includes("your-anon-key");
   const isValid = supabaseUrl && supabaseAnonKey && !hasPlaceholderUrl && !hasPlaceholderAnonKey;

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -41,7 +42,12 @@ export default async function DashboardLayout({
           <ThemeToggle />
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{appUser?.name ?? user.email}</span>
+            <Link
+              href="/dashboard/profile"
+              className="text-sm font-medium text-slate-700 hover:text-violet-700 dark:text-slate-200 dark:hover:text-violet-300"
+            >
+              {appUser?.name ?? user.email}
+            </Link>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-sm font-semibold text-violet-700 dark:bg-violet-900/50 dark:text-violet-300">
               {(appUser?.name ?? user.email)?.[0]?.toUpperCase() ?? "U"}
             </div>

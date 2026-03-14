@@ -20,10 +20,21 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError(error.message);
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error && err.message === "Failed to fetch"
+          ? "Could not reach Supabase (network). Check .env.local: NEXT_PUBLIC_SUPABASE_URL must be https://YOUR_REF.supabase.co with no extra spaces; restart npm run dev after edits. If the URL is correct, open your Supabase project in the dashboard—paused projects block login."
+          : err instanceof Error
+            ? err.message
+            : "Sign-in failed";
+      setError(msg);
       setLoading(false);
       return;
     }

@@ -10,10 +10,12 @@ const TABS = [
   { href: "/dashboard/products", label: "Products" },
   { href: "/dashboard/boms", label: "BOMs" },
   { href: "/dashboard/work-orders", label: "Work Orders" },
-  { href: "/dashboard/production", label: "Production" },
   { href: "/dashboard/scheduler", label: "Scheduler" },
   { href: "/dashboard/inventory", label: "Inventory" },
   { href: "/dashboard/reports", label: "Reports" },
+  { href: "/admin/users", label: "Users" },
+  { href: "/admin/roles", label: "Roles & Permissions" },
+  { href: "/dashboard/settings", label: "Settings" },
 ];
 
 export function DashboardSidebar() {

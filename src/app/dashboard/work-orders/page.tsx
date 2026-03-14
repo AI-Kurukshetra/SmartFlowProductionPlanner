@@ -27,6 +27,8 @@ interface ActiveRun {
 export default function WorkOrdersPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
+  const [activeRuns, setActiveRuns] = useState<ActiveRun[]>([]);
+  const [productionBusy, setProductionBusy] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<(WorkOrder & WorkOrderFormData) | null>(null);

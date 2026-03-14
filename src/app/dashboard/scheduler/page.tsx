@@ -19,8 +19,10 @@ export default async function SchedulerPage() {
   if (!appUser?.organization_id) {
     return (
       <div className="px-6 py-8">
-        <h1 className="text-2xl font-semibold text-slate-900">Scheduler</h1>
-        <p className="mt-2 text-slate-600">Complete onboarding first to configure organization and resources.</p>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Scheduler</h1>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
+          Complete onboarding first to configure organization and resources.
+        </p>
       </div>
     );
   }
@@ -52,6 +54,7 @@ export default async function SchedulerPage() {
       initialResources={(resources ?? []) as Resource[]}
       initialWorkOrders={(workOrders ?? []) as WorkOrder[]}
       initialSchedules={(schedules ?? []) as Schedule[]}
+      initialNowIso={new Date().toISOString()}
     />
   );
 }

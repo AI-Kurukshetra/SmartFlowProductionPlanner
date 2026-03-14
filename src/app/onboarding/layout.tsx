@@ -55,13 +55,13 @@ export default async function OnboardingLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <header className="border-b border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-lg font-semibold text-slate-800">
+          <Link href="/" className="text-lg font-semibold text-slate-800 dark:text-slate-100">
             Smart Product Planner
           </Link>
-          <span className="text-sm text-slate-500">Setup</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">Setup</span>
         </div>
       </header>
 
@@ -77,17 +77,17 @@ export default async function OnboardingLayout({
                       (step.path === "/onboarding/plant" && hasPlant) ||
                       (step.path === "/onboarding/resources" && hasResources)
                         ? "bg-teal-600 text-white"
-                        : "bg-slate-200 text-slate-600"
+                        : "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
                     }`}
                   >
                     {i + 1}
                   </div>
-                  <span className="mt-2 text-xs font-medium text-slate-600">
+                  <span className="mt-2 text-xs font-medium text-slate-600 dark:text-slate-300">
                     {step.label}
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="mx-2 h-0.5 flex-1 bg-slate-200" />
+                  <div className="mx-2 h-0.5 flex-1 bg-slate-200 dark:bg-slate-700" />
                 )}
               </div>
             ))}
