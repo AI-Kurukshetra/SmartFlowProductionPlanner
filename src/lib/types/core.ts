@@ -130,3 +130,68 @@ export interface KPI {
   recorded_at: string;
   created_at?: string;
 }
+
+// Demands (customer orders, forecasts)
+export interface Demand {
+  id: string;
+  organization_id: string;
+  product_id: string;
+  quantity: number;
+  due_date: string;
+  status: string;
+  source: string;
+  notes?: string;
+  work_order_id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Calendars (plant working days, holidays)
+export interface Calendar {
+  id: string;
+  plant_id: string;
+  name: string;
+  date: string;
+  is_working_day: boolean;
+  notes?: string;
+  created_at?: string;
+}
+
+// Maintenance windows (resource unavailable)
+export interface MaintenanceWindow {
+  id: string;
+  resource_id: string;
+  start_time: string;
+  end_time: string;
+  reason?: string;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Quality gates (inspection points)
+export interface QualityGate {
+  id: string;
+  organization_id: string;
+  name: string;
+  description?: string;
+  type: string;
+  sequence: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Exceptions (downtime, deviations, alerts)
+export interface Exception {
+  id: string;
+  organization_id: string;
+  type: string;
+  resource_id?: string;
+  work_order_id?: string;
+  description: string;
+  severity: string;
+  occurred_at: string;
+  resolved_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}

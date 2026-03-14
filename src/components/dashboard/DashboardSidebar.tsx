@@ -9,9 +9,18 @@ const BASE_TABS = [
   { href: "/dashboard/resources", label: "Resources" },
   { href: "/dashboard/products", label: "Products" },
   { href: "/dashboard/boms", label: "BOMs" },
+  { href: "/dashboard/demands", label: "Demands" },
   { href: "/dashboard/work-orders", label: "Work Orders" },
   { href: "/dashboard/scheduler", label: "Scheduler" },
+  { href: "/dashboard/production", label: "Production" },
   { href: "/dashboard/inventory", label: "Inventory" },
+  { href: "/dashboard/suppliers", label: "Suppliers" },
+  { href: "/dashboard/constraints", label: "Constraints" },
+  { href: "/dashboard/shift-patterns", label: "Shift Patterns" },
+  { href: "/dashboard/calendars", label: "Calendars" },
+  { href: "/dashboard/maintenance", label: "Maintenance" },
+  { href: "/dashboard/quality-gates", label: "Quality Gates" },
+  { href: "/dashboard/exceptions", label: "Exceptions" },
   { href: "/dashboard/reports", label: "Reports" },
 ];
 
