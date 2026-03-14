@@ -28,12 +28,21 @@ export default async function DashboardLayout({
           <Link href="/dashboard" className="text-lg font-semibold text-slate-800">
             Smart Product Planner
           </Link>
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-4">
             <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-800">
               Dashboard
             </Link>
+            <Link href="/dashboard/plants" className="text-sm text-slate-600 hover:text-slate-800">
+              Plants
+            </Link>
+            <Link href="/dashboard/resources" className="text-sm text-slate-600 hover:text-slate-800">
+              Resources
+            </Link>
             <Link href="/dashboard/products" className="text-sm text-slate-600 hover:text-slate-800">
               Products
+            </Link>
+            <Link href="/dashboard/boms" className="text-sm text-slate-600 hover:text-slate-800">
+              BOMs
             </Link>
             <Link href="/dashboard/work-orders" className="text-sm text-slate-600 hover:text-slate-800">
               Work orders
@@ -43,6 +52,9 @@ export default async function DashboardLayout({
             </Link>
             <Link href="/dashboard/inventory" className="text-sm text-slate-600 hover:text-slate-800">
               Inventory
+            </Link>
+            <Link href="/dashboard/reports" className="text-sm text-slate-600 hover:text-slate-800">
+              Reports
             </Link>
             <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
               <span className="text-sm text-slate-600">{appUser?.name ?? user.email}</span>

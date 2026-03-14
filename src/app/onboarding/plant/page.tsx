@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 export default function PlantOnboardingPage() {
   const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState("");
+  const [timezone, setTimezone] = useState("Asia/Kolkata");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -40,8 +40,8 @@ export default function PlantOnboardingPage() {
     const { error: insertError } = await supabase.from("plants").insert({
       organization_id: orgId,
       name,
-      code: code || null,
-      address: address || null,
+      location: location || null,
+      timezone: timezone || null,
     });
 
     if (insertError) {
@@ -100,31 +100,35 @@ export default function PlantOnboardingPage() {
         </div>
 
         <div>
-          <label htmlFor="code" className="mb-1.5 block text-sm font-medium text-slate-700">
-            Plant code (optional)
+          <label htmlFor="location" className="mb-1.5 block text-sm font-medium text-slate-700">
+            Location (optional)
           </label>
           <input
-            id="code"
+            id="location"
             type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="PLT-001"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Ahmedabad, India"
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
           />
         </div>
 
         <div>
-          <label htmlFor="address" className="mb-1.5 block text-sm font-medium text-slate-700">
-            Address (optional)
+          <label htmlFor="timezone" className="mb-1.5 block text-sm font-medium text-slate-700">
+            Timezone
           </label>
-          <textarea
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="123 Industrial Ave..."
-            rows={2}
+          <select
+            id="timezone"
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-          />
+          >
+            <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+            <option value="UTC">UTC</option>
+            <option value="America/New_York">America/New_York (ET)</option>
+            <option value="Europe/London">Europe/London (GMT/BST)</option>
+            <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+          </select>
         </div>
 
         <button
